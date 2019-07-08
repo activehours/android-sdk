@@ -138,3 +138,5 @@ android.libraryVariants.all { variant ->
     }
     project.artifacts.add("archives", tasks["${variant.name}SourcesJar"]);
 }
+
+apply from: "https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/${mavPluginVersion}/gradle-mavenizer.gradle"
