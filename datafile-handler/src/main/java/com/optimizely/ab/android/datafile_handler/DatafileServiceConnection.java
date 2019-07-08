@@ -28,6 +28,7 @@ import com.optimizely.ab.android.shared.Cache;
 import com.optimizely.ab.android.shared.Client;
 import com.optimizely.ab.android.shared.OptlyStorage;
 import com.optimizely.ab.android.shared.DatafileConfig;
+import com.optimizely.ab.android.shared.PinnedSSLSocketFactory;
 
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,8 @@ public class DatafileServiceConnection implements ServiceConnection {
         if (datafileService != null) {
             DatafileClient datafileClient = new DatafileClient(
                     new Client(new OptlyStorage(context.getApplicationContext()),
-                            LoggerFactory.getLogger(OptlyStorage.class)),
+                            LoggerFactory.getLogger(OptlyStorage.class),
+                            new PinnedSSLSocketFactory().getPinnedSslSocket(context.getApplicationContext(), PinnedSSLSocketFactory.Host.CDN)),
                     LoggerFactory.getLogger(DatafileClient.class));
 
             DatafileCache datafileCache = new DatafileCache(

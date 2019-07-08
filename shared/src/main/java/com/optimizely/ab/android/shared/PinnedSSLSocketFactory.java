@@ -1,7 +1,6 @@
 package com.optimizely.ab.android.shared;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +53,7 @@ public class PinnedSSLSocketFactory {
 
         // Return null, if no certificate exists
         if (certificate != null) {
+            logger.info("pinning the connection");
             return getSSLSocketFactory(certificate);
         } else {
             //fail safe
@@ -86,7 +86,7 @@ public class PinnedSSLSocketFactory {
             Certificate ca;
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             ca = cf.generateCertificate(input);
-            Log.d("pinnedLogs", "ca= " + ((X509Certificate) ca).getSubjectDN());
+            logger.info("ca= " + ((X509Certificate) ca).getSubjectDN());
             input.close();
 
             // Create a KeyStore containing our trusted CAs

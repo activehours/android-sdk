@@ -18,7 +18,6 @@ package com.optimizely.ab.android.shared;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.slf4j.Logger;
 
@@ -27,6 +26,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.cert.X509Certificate;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -85,6 +85,7 @@ public class Client {
                 // use our custom HostnameVerifier
                 ((HttpsURLConnection) connection).setHostnameVerifier(hostnameVerifier);
                 ((HttpsURLConnection) connection).setSSLSocketFactory(mSslSocketFactory);
+                logger.info("secure connection established for " + url.getHost());
             }
 
             return connection;

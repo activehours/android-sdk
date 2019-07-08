@@ -26,6 +26,7 @@ import com.optimizely.ab.android.shared.Cache;
 import com.optimizely.ab.android.shared.Client;
 import com.optimizely.ab.android.shared.OptlyStorage;
 import com.optimizely.ab.android.shared.DatafileConfig;
+import com.optimizely.ab.android.shared.PinnedSSLSocketFactory;
 import com.optimizely.ab.android.shared.ServiceScheduler;
 
 import org.json.JSONObject;
@@ -47,7 +48,8 @@ public class DefaultDatafileHandler implements DatafileHandler {
      */
     public String downloadDatafile(Context context, DatafileConfig datafileConfig) {
         DatafileClient datafileClient = new DatafileClient(
-                new Client(new OptlyStorage(context), LoggerFactory.getLogger(OptlyStorage.class)),
+                new Client(new OptlyStorage(context), LoggerFactory.getLogger(OptlyStorage.class),
+                        new PinnedSSLSocketFactory().getPinnedSslSocket(context.getApplicationContext(), PinnedSSLSocketFactory.Host.CDN)),
                 LoggerFactory.getLogger(DatafileClient.class));
 
         String datafileUrl = datafileConfig.getUrl();
