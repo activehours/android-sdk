@@ -18,6 +18,7 @@ package com.optimizely.ab.android.shared;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.slf4j.Logger;
 
@@ -29,6 +30,10 @@ import java.net.URLConnection;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+
 /**
  * Functionality common to all clients using http connections
  */
@@ -38,6 +43,7 @@ public class Client {
 
     @NonNull private final OptlyStorage optlyStorage;
     @NonNull private final Logger logger;
+    private final SSLSocketFactory mSslSocketFactory;
 
     /**
      * Constructs a new Client instance
@@ -46,8 +52,20 @@ public class Client {
      * @param logger       an instance of {@link Logger}
      */
     public Client(@NonNull OptlyStorage optlyStorage, @NonNull Logger logger) {
+        this(optlyStorage, logger, /* sslSocketFactory = */ null);
+    }
+
+    /**
+     *  Constructs a new Client instance with SSLSocketFactory
+     *
+     * @param optlyStorage an instance of {@link OptlyStorage}
+     * @param logger an instance of {@link Logger}
+     * @param sslSocketFactory an instance of {@link SSLSocketFactory}
+     */
+    public Client(@NonNull OptlyStorage optlyStorage, @NonNull Logger logger, SSLSocketFactory sslSocketFactory) {
         this.optlyStorage = optlyStorage;
         this.logger = logger;
+        this.mSslSocketFactory = sslSocketFactory;
     }
 
     /**
@@ -59,11 +77,28 @@ public class Client {
     @Nullable
     public HttpURLConnection openConnection(URL url) {
         try {
-            return (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // use custom SSLSocketFactory from our SSLContext, if any, for HTTPS
+            if ("https".equals(url.getProtocol()) && mSslSocketFactory != null) {
+                HostnameVerifier hostnameVerifier = getHostnameVerifier(url);
+                // use our custom HostnameVerifier
+                ((HttpsURLConnection) connection).setHostnameVerifier(hostnameVerifier);
+                ((HttpsURLConnection) connection).setSSLSocketFactory(mSslSocketFactory);
+            }
+
+            return connection;
         } catch (Exception e) {
             logger.warn("Error making request to {}.", url);
         }
         return null;
+    }
+
+    private HostnameVerifier getHostnameVerifier(URL url) {
+        return (hostname, session) -> {
+            HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
+            return hv.verify(url.getHost(), session);
+        };
     }
 
     /**
