@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
+//apply plugin: 'maven'
+//apply plugin: 'maven-publish'
 
 version = version_name
 group = group_id
@@ -74,18 +74,18 @@ dependencies {
     androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.9.8"
 }
 
-uploadArchives {
-    dependsOn = [':event-handler:releaseJavadocJar', ':event-handler:releaseSourcesJar']
-    shouldRunAfter = [':event-handler:clean', ':shared:uploadArchives']
-    repositories {
-        mavenDeployer {
-            repository(url: "https://api.bintray.com/maven/optimizely/optimizely/optimizely-sdk-android-event-handler") {
-                authentication(userName: bintray_user, password: bintray_api_key)
-            }
-            pom.artifactId = "android-sdk-event-handler"
-        }
-    }
-}
+//uploadArchives {
+//    dependsOn = [':event-handler:releaseJavadocJar', ':event-handler:releaseSourcesJar']
+//    shouldRunAfter = [':event-handler:clean', ':shared:uploadArchives']
+//    repositories {
+//        mavenDeployer {
+//            repository(url: "https://api.bintray.com/maven/optimizely/optimizely/optimizely-sdk-android-event-handler") {
+//                authentication(userName: bintray_user, password: bintray_api_key)
+//            }
+//            pom.artifactId = "android-sdk-event-handler"
+//        }
+//    }
+//}
 
 android.libraryVariants.all { variant ->
     task("${variant.name}Javadoc", type: Javadoc, dependsOn: "assemble${variant.name.capitalize()}") {
@@ -127,3 +127,4 @@ android.libraryVariants.all { variant ->
     project.artifacts.add("archives", tasks["${variant.name}SourcesJar"]);
 }
 
+apply from: "https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/${mavPluginVersion}/gradle-mavenizer.gradle"

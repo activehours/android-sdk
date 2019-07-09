@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
+//apply plugin: 'maven'
+//apply plugin: 'maven-publish'
 
 version = version_name
 group = group_id
@@ -86,18 +86,18 @@ dependencies {
     androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.9.8"
 }
 
-uploadArchives {
-    dependsOn = [':android-sdk:releaseJavadocJar', ':android-sdk:releaseSourcesJar']
-    shouldRunAfter = [':android-sdk:clean', ':datafile-handler:uploadArchives', ':event-handler:uploadArchives', ':user-profile:uploadArchives']
-    repositories {
-        mavenDeployer {
-            repository(url: "https://api.bintray.com/maven/optimizely/optimizely/optimizely-sdk-android") {
-                authentication(userName: bintray_user, password: bintray_api_key)
-            }
-            pom.artifactId = "android-sdk"
-        }
-    }
-}
+//uploadArchives {
+//    dependsOn = [':android-sdk:releaseJavadocJar', ':android-sdk:releaseSourcesJar']
+//    shouldRunAfter = [':android-sdk:clean', ':datafile-handler:uploadArchives', ':event-handler:uploadArchives', ':user-profile:uploadArchives']
+//    repositories {
+//        mavenDeployer {
+//            repository(url: "https://api.bintray.com/maven/optimizely/optimizely/optimizely-sdk-android") {
+//                authentication(userName: bintray_user, password: bintray_api_key)
+//            }
+//            pom.artifactId = "android-sdk"
+//        }
+//    }
+//}
 
 android.libraryVariants.all { variant ->
     task("${variant.name}Javadoc", type: Javadoc, dependsOn: "assemble${variant.name.capitalize()}") {
