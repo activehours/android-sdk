@@ -64,6 +64,11 @@ ext {
     espresso_ver = "2.2.2"
     gson_ver = "2.8.5"
     group_id = "com.optimizely.ab"
+    mavPluginVersion = '1.0.3'
+    mavProjectName = 'optimizely-android-sdk'
+    mavLibraryDescription = "A custom version of Optimizely SDK with certificate pinning functionality"
+    mavSiteUrl = "https://github.com/activehours/optimizely-android-sdk"
+    mavGitUrl = mavSiteUrl + '.git'
 }
 
 task clean(type: Delete) {

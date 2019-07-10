@@ -28,6 +28,7 @@ import com.optimizely.ab.android.shared.Cache;
 import com.optimizely.ab.android.shared.Client;
 import com.optimizely.ab.android.shared.OptlyStorage;
 import com.optimizely.ab.android.shared.DatafileConfig;
+import com.optimizely.ab.android.shared.PinnedSSLSocketFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,8 @@ public class DatafileService extends Service {
                 String extraDatafileConfig = intent.getStringExtra(EXTRA_DATAFILE_CONFIG);
                 DatafileConfig datafileConfig = DatafileConfig.fromJSONString(extraDatafileConfig);
                 DatafileClient datafileClient = new DatafileClient(
-                        new Client(new OptlyStorage(this.getApplicationContext()), LoggerFactory.getLogger(OptlyStorage.class)),
+                        new Client(new OptlyStorage(this.getApplicationContext()), LoggerFactory.getLogger(OptlyStorage.class),
+                                new PinnedSSLSocketFactory().getPinnedSslSocket(this.getApplicationContext(), PinnedSSLSocketFactory.Host.CDN)),
                         LoggerFactory.getLogger(DatafileClient.class));
                 DatafileCache datafileCache = new DatafileCache(
                         datafileConfig.getKey(),
