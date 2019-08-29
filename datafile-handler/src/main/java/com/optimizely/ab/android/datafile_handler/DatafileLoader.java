@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
 import com.optimizely.ab.android.shared.DatafileConfig;
+import com.optimizely.ab.android.shared.OptlyStorage;
 
 import org.slf4j.Logger;
 
@@ -110,6 +111,14 @@ public class DatafileLoader {
 
         @Override
         protected String doInBackground(Void... params) {
+
+            // if there is a problem with the cached datafile, set last modified to 1970
+            if (!datafileCache.exists() || (datafileCache.exists() && datafileCache.load() == null)) {
+                // create a wrapper for application context default storage.
+                OptlyStorage storage = new OptlyStorage(this.datafileService.getApplicationContext());
+                // set the last modified for this url to 1 millisecond past Jan 1, 1970.
+                storage.saveLong(datafileUrl, 1);
+            }
             String dataFile = datafileClient.request(datafileUrl);
             if (dataFile != null && !dataFile.isEmpty()) {
                 if (datafileCache.exists()) {
@@ -133,13 +142,6 @@ public class DatafileLoader {
             // if empty or null than it should be handled in datafileLoader listener to get from cache or Raw resource
             datafileLoader.notify(datafileLoadedListener, dataFile);
             datafileService.stop();
-
-            if (datafileLoader.hasNotifiedListener) {
-                // we're done here. meaning, we have notified you of either the cache coming in or of a new file.
-                // so, we are notifying you that the data file service has stopped.
-                datafileLoadedListener.onStop(datafileService.getApplicationContext());
-            }
-
         }
     }
 }

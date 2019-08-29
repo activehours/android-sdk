@@ -1,4 +1,6 @@
 language: android
+# you MUST mention trusty https://docs.travis-ci.com/user/languages/android/
+dist: trusty
 env:
  global:
 # These parameters should match the parameters for build tools and sdk versions in the gradle file
@@ -6,13 +8,12 @@ env:
  - ADB_INSTALL_TIMEOUT=5 # minutes
  - ANDROID_API=28 # api is same as gradle file
  matrix:
- - EMULATOR_API=22
  - EMULATOR_API=21
+ - EMULATOR_API=22
 android:
   components:
     - tools
-    - platform-tools
-    - tools
+    - platform-tools-$ANDROID_BUILD_TOOLS
     - build-tools-$ANDROID_BUILD_TOOLS
     - android-$ANDROID_API
     - android-$EMULATOR_API
@@ -35,13 +36,13 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 before_install:
-    - yes | sdkmanager "platforms;android-28"
+    #- yes | sdkmanager "platforms;android-$ANDROID_API"
 before_script:
   - echo $TRAVIS_BRANCH
   - echo $TRAVIS_TAG
   - echo no | android create avd --force -n test -t android-$EMULATOR_API --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
-  - android-wait-for-emulator
+  - scripts/android-wait-for-emulator.sh
   - adb shell input keyevent 82 &
 addons:
   srcclr: true
@@ -53,11 +54,13 @@ script:
 # Integration tests need to run first to reset the PR build status to pending
 stages:
   - 'Integration tests'
+  - 'Benchmarking tests'
   - 'Test'
 
 jobs:
   include:
-    - stage: 'Integration tests'
+    - &integrationtest
+      stage: 'Integration tests'
       env:
         - SDK=android
         - BUILD_NUMBER=$TRAVIS_BUILD_NUMBER
@@ -68,5 +71,8 @@ jobs:
       before_script:
         - mkdir $HOME/travisci-tools && pushd $HOME/travisci-tools && git init && git pull https://$CI_USER_TOKEN@github.com/optimizely/travisci-tools.git && popd
       script:
-        - "$HOME/travisci-tools/fsc-trigger/trigger_fullstack-sdk-compat.sh"
+        - $HOME/travisci-tools/trigger-script-with-status-update.sh
       after_success: travis_terminate 0
+    - <<: *integrationtest
+      stage: 'Benchmarking tests'
+      env: SDK=android FULLSTACK_TEST_REPO=Benchmarking
