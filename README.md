@@ -1,6 +1,7 @@
 # Optimizely Android SDK
 Master<br/> 
 [![Master Status](https://travis-ci.org/optimizely/android-sdk.svg?branch=master)](https://travis-ci.org/optimizely/android-sdk)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Factivehours%2Foptimizely-android-sdk.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Factivehours%2Foptimizely-android-sdk?ref=badge_shield)
 <br/>
 <br/>
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/gradle-extra-configurations-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
@@ -105,3 +106,7 @@ Additional credits from java-sdk:[https://github.com/optimizely/java-sdk/blob/ma
 **Android Logger** [https://github.com/noveogroup/android-logger](https://github.com/noveogroup/android-logger)
 License (Public Domain): [https://github.com/noveogroup/android-logger/blob/master/LICENSE.txt](https://github.com/noveogroup/android-logger/blob/master/LICENSE.txt)
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Factivehours%2Foptimizely-android-sdk.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Factivehours%2Foptimizely-android-sdk?ref=badge_large)
